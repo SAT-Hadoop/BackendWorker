@@ -23,8 +23,19 @@ public class HadoopCluster implements Runnable{
     }
     
     public void getInputFile(){
-        String inputurl = this.job.getInputurl();
-        
+        try {
+            String inputurl = this.job.getInputurl();
+            Runtime r = Runtime.getRuntime();
+            String url = "https://itmd544.s3.amazonaws.com/" + inputurl;
+            r.exec("wget -o /tmp/  "+url).waitFor();
+            r.exec("hadoop namenode -format").waitFor();
+            r.exec("hadoop -fs mkdir /usr").waitFor();
+            r.exec("hadoop -fs mkdir /usr/input").waitFor();
+            r.exec("hadoop -fs put /tmp/"+inputurl+" /usr/input/");
+            
+        } catch (IOException|InterruptedException ex) {
+            Logger.getLogger(HadoopCluster.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
