@@ -5,6 +5,7 @@
  */
 package edu.iit.driver;
 
+import edu.iit.model.User_Jobs;
 import edu.iit.worker.Worker;
 
 /**
@@ -16,7 +17,11 @@ public class Driver {
     public static void main(String[] args){
         Worker worker = new Worker();
         if (worker.checkForMessages()){
+            String jobid = worker.getMessages();
+            User_Jobs job = worker.getUserJob(jobid);
             
+                    
+                    
         }
     }
     

@@ -6,6 +6,7 @@
 package edu.iit.worker;
 
 import edu.iit.doa.DOA;
+import edu.iit.model.User_Jobs;
 import edu.iit.sqs.SendQueue;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
@@ -17,9 +18,10 @@ import java.util.logging.Logger;
  * @author supramo
  */
 public class Worker{
-    
-    String queuename = "";
-    public Worker(){
+    SendQueue sendq = new SendQueue();
+    DOA doa = new DOA();
+    String queuename = "https://sqs.us-east-1.amazonaws.com/961412573847/sai4";
+    /*public Worker(){
         String ipaddress;
         try {
             ipaddress = Inet4Address.getLocalHost().getHostAddress();
@@ -30,11 +32,19 @@ public class Worker{
             System.exit(1);
         }
         
-    }
+    }*/
     public boolean checkForMessages(){
-        SendQueue sendq = new SendQueue();
+        
+        //this.queuename = "https://sqs.us-east-1.amazonaws.com/961412573847/sai4";
         return sendq.checkForMessages(this.queuename);
     }
     
+    public String getMessages(){
+        return sendq.getMessage(queuename).getBody();
+    }
+    
+    public User_Jobs getUserJob(String jobid){
+        return doa.getUserJob(jobid);
+    }
 }
 
