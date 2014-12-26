@@ -31,7 +31,8 @@ public class HadoopCluster implements Runnable{
             r.exec("hadoop namenode -format").waitFor();
             r.exec("hadoop -fs mkdir /usr").waitFor();
             r.exec("hadoop -fs mkdir /usr/input").waitFor();
-            r.exec("hadoop -fs put /tmp/"+inputurl+" /usr/input/");
+            r.exec("hadoop -fs put /tmp/"+inputurl+" /usr/input/").waitFor();
+            
             
         } catch (IOException|InterruptedException ex) {
             Logger.getLogger(HadoopCluster.class.getName()).log(Level.SEVERE, null, ex);
@@ -43,8 +44,8 @@ public class HadoopCluster implements Runnable{
         
          
         try {
-            Process p = Runtime.getRuntime().exec("echo 'sa'");
-            p.waitFor();
+            Runtime r = Runtime.getRuntime();
+            r.exec("hadoop jar worcount /usr/input /usr/output").waitFor();
         } catch (IOException|InterruptedException ex) {
             Logger.getLogger(HadoopCluster.class.getName()).log(Level.SEVERE, null, ex);
         }
