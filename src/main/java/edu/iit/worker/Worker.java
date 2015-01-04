@@ -21,7 +21,7 @@ public class Worker{
     SendQueue sendq = new SendQueue();
     DOA doa = new DOA();
     String queuename = "https://sqs.us-east-1.amazonaws.com/961412573847/sai4";
-    /*public Worker(){
+    public Worker(){
         String ipaddress;
         try {
             ipaddress = Inet4Address.getLocalHost().getHostAddress();
@@ -32,7 +32,7 @@ public class Worker{
             System.exit(1);
         }
         
-    }*/
+    }
     public boolean checkForMessages(){
         
         //this.queuename = "https://sqs.us-east-1.amazonaws.com/961412573847/sai4";

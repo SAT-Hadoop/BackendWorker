@@ -3,38 +3,29 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.iit.hadoopcluster;
-
-import edu.iit.model.User_Jobs;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
  * @author supramo
  */
-public class HadoopCluster implements Runnable{
-    
-    User_Jobs job;
-    
-    public HadoopCluster(User_Jobs job){
-        this.job = job;
-    }
-    
-    public void getInputFile(){
-        try {
-            String inputurl = this.job.getInputurl();
-            Runtime r = Runtime.getRuntime();
-            String url = "https://itmd544.s3.amazonaws.com/" + inputurl;
-            r.exec("/usr/bin/wget -o /tmp/inputfile  "+url).waitFor();       
-        } catch (IOException|InterruptedException ex) {
-            Logger.getLogger(HadoopCluster.class.getName()).log(Level.SEVERE, null, ex);
-        }
+public class JobExecutionTest {
+
+    public JobExecutionTest() {
     }
 
-    @Override
-    public void run() {
+    // TODO add test methods here.
+    // The methods must be annotated with annotation @Test. For example:
+    //
+    @Test @Ignore
+    public void runWordCount() {
         Runtime r = Runtime.getRuntime();
         
         String bin = "/host/DownloadsUbuntu/hadoop-1.2.1/bin/";
@@ -51,8 +42,12 @@ public class HadoopCluster implements Runnable{
             r.exec(bin + "hadoop fs -put /tmp/inputfile /input/").waitFor();
             r.exec(bin + "hadoop jar " + jarlocation +" " +mainclass +" /input/inputfile /output").waitFor();    
         } catch (Exception ex) {
-            System.out.println("something messed up");
+            Logger.getLogger(JobExecutionTest.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
-    
+    @Test
+    public void runWorker(){
+        
+    }
 }

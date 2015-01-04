@@ -5,6 +5,7 @@
  */
 package edu.iit.driver;
 
+import edu.iit.hadoopcluster.HadoopCluster;
 import edu.iit.model.User_Jobs;
 import edu.iit.worker.Worker;
 
@@ -19,7 +20,7 @@ public class Driver {
         if (worker.checkForMessages()){
             String jobid = worker.getMessages();
             User_Jobs job = worker.getUserJob(jobid);
-            
+            //new Thread(new HadoopCluster(job)).start();
                     
                     
         }
