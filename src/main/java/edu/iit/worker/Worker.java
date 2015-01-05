@@ -20,13 +20,15 @@ import java.util.logging.Logger;
 public class Worker{
     SendQueue sendq = new SendQueue();
     DOA doa = new DOA();
-    String queuename = "https://sqs.us-east-1.amazonaws.com/961412573847/sai4";
+    String queuename;
     public Worker(){
         String ipaddress;
         try {
             ipaddress = Inet4Address.getLocalHost().getHostAddress();
+            
             DOA doa = new DOA();
             this.queuename = doa.getEc2Queue(ipaddress);
+            System.out.println(ipaddress+":"+this.queuename);
         } catch (UnknownHostException ex) {
             Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(1);
@@ -40,7 +42,7 @@ public class Worker{
     }
     
     public String getMessages(){
-        return sendq.getMessage(queuename).getBody();
+        return sendq.getMessage().getBody();
     }
     
     public User_Jobs getUserJob(String jobid){
