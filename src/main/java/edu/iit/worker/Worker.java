@@ -8,6 +8,7 @@ package edu.iit.worker;
 import edu.iit.doa.DOA;
 import edu.iit.model.User_Jobs;
 import edu.iit.sqs.SendQueue;
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
@@ -39,6 +40,16 @@ public class Worker{
         
         //this.queuename = "https://sqs.us-east-1.amazonaws.com/961412573847/sai4";
         return sendq.checkForMessages(this.queuename);
+    }
+    
+    
+    public void getInputFile(String filelink) {
+        try {
+            Runtime r = Runtime.getRuntime();
+            r.exec("/usr/local/bin/aws -o inputfile "+filelink).waitFor();
+        } catch (IOException|InterruptedException ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public String getMessages(){
