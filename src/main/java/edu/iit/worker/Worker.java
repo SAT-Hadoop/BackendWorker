@@ -46,7 +46,7 @@ public class Worker{
     public void getInputFile(String filelink) {
         try {
             Runtime r = Runtime.getRuntime();
-            r.exec("/usr/local/bin/aws -o inputfile "+filelink).waitFor();
+            r.exec("/usr/bin/wget -o /tmp/inputfile  "+filelink).waitFor();
         } catch (IOException|InterruptedException ex) {
             Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
         }
