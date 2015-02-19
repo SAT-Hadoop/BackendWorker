@@ -5,6 +5,7 @@
  */
 package edu.iit.driver;
 
+import com.amazonaws.services.sqs.model.Message;
 import edu.iit.hadoopcluster.HadoopCluster;
 import edu.iit.model.User_Jobs;
 import edu.iit.worker.Worker;
@@ -15,15 +16,29 @@ import edu.iit.worker.Worker;
  */
 public class Driver {
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws InterruptedException {
         Worker worker = new Worker();
-        if (worker.checkForMessages()){
-            String jobid = worker.getMessages();
-            User_Jobs job = worker.getUserJob(jobid);
-            //new Thread(new HadoopCluster(job)).start();
-                    
-                    
+        
+        while (true) {
+            if (worker.checkForMessages()) {
+                Message message = worker.getMessages();
+                String jobid = message.getBody();
+                User_Jobs job = worker.getUserJob(jobid);
+                
+                Thread t = new Thread(new HadoopCluster(job));
+                t.start();
+                
+                while (t.isAlive()) {
+                    Thread.sleep(1000);
+                }
+                worker.deleteMessage(message, job);
+                worker.sendmail(job);
+            } else {
+                System.out.println("no Messages we are sleeping");
+                Thread.sleep(5000);
+            }
         }
+        
     }
     
 }

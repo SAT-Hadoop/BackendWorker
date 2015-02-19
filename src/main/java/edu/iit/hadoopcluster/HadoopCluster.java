@@ -23,17 +23,6 @@ public class HadoopCluster implements Runnable{
     public HadoopCluster(User_Jobs job){
         this.job = job;
     }
-    
-    public void getInputFile(){
-        try {
-            String inputurl = this.job.getInputurl();
-            Runtime r = Runtime.getRuntime();
-            String url = "https://itmd544.s3.amazonaws.com/" + inputurl;
-            r.exec("/usr/bin/wget -o /tmp/inputfile  "+url).waitFor();       
-        } catch (IOException|InterruptedException ex) {
-            Logger.getLogger(HadoopCluster.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
     @Override
     public void run() {
@@ -60,7 +49,8 @@ public class HadoopCluster implements Runnable{
             r.exec(bin + "hadoop fs -mkdir /input").waitFor();
             r.exec(bin + "hadoop fs -put /tmp/inputfile /input/").waitFor();
             r.exec(bin + "hadoop jar " + jarlocation +" " +mainclass +" /input/inputfile /output").waitFor();    
-            r.exec(bin + "hadoop fs -get /output /tmp/");
+            r.exec(bin + "hadoop fs -get /output /tmp/").waitFor();            
+            r.exec(sbin + "stop-all.sh");
             
         } catch (Exception ex) {
             Logger.getLogger(HadoopCluster.class.getName()).log(Level.SEVERE, null, ex);

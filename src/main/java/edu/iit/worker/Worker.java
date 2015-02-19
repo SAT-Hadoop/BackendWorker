@@ -5,9 +5,12 @@
  */
 package edu.iit.worker;
 
+import com.amazonaws.services.sqs.model.Message;
 import edu.iit.doa.DOA;
 import edu.iit.model.User_Jobs;
+import edu.iit.sendmail.SendEmail;
 import edu.iit.sqs.SendQueue;
+import edu.iit.walrus.Walrus;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
@@ -21,6 +24,7 @@ import java.util.logging.Logger;
 public class Worker{
     SendQueue sendq = new SendQueue();
     DOA doa = new DOA();
+    Walrus walrus = new Walrus();
     String queuename;
     public Worker(){
         String ipaddress;
@@ -46,18 +50,31 @@ public class Worker{
     public void getInputFile(String filelink) {
         try {
             Runtime r = Runtime.getRuntime();
-            r.exec("/usr/bin/wget -o /tmp/inputfile  "+filelink).waitFor();
+            walrus.downloadObject("sat-hadoop", filelink);
+            r.exec("mv "+filelink+" /tmp  ").waitFor();
         } catch (IOException|InterruptedException ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.WARNING,"Problem downloading the bucket");
             Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    public String getMessages(){
-        return sendq.getMessage().getBody();
+    public Message getMessages(){
+        return sendq.getMessage();
     }
     
     public User_Jobs getUserJob(String jobid){
         return doa.getUserJob(jobid);
+    }
+    
+    public void deleteMessage(Message message,User_Jobs job){
+        sendq.deleteMessage(message, this.queuename);
+        job.setJobstatus("COMPLETE");
+        doa.updateJob(job);
+    }
+    
+    public void sendmail(User_Jobs job) {
+        String to = doa.getUser(job.getUserid()).getEmailid();
+        new SendEmail().sendmail("hajek@sat.iit.edu", to);
     }
 }
 

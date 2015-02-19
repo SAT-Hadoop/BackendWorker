@@ -75,29 +75,13 @@ public class JobExecutionTest {
     public void runWorker(){
         Worker worker = new Worker();
         if (worker.checkForMessages()){
-            String userjob = worker.getMessages();
-            User_Jobs job = worker.getUserJob(userjob);
-            String inputurl = job.getInputurl();
-            log.warning(job.toString());
+            System.out.println("There are messages" + worker.getMessages().getBody());
+            User_Jobs job = worker.getUserJob(worker.getMessages().getBody());
             System.out.println(job.toString());
-            worker.getInputFile(job.getInputurl());
-            
-            /*File f = new File("/tmp/output");
-            
-            if (!f.exists()) {
-                System.out.println("sai is sawe");
-                System.exit(1);
-            }
-            S3Bucket s3 = new S3Bucket();
-            s3.setBucketname(job.getOutputurl());
-            System.out.println("created bucket "+ s3.getBucketName());
-            s3.uploadDirectory("/tmp/output");*/
-        }
-        else{
-            System.out.println("no jobs");
+            //worker.getInputFile(job.getInputurl());
+            worker.sendmail(job);
         }
         
-        //Logger.getLogger(JobExecutionTest.class.getName()).log(Level.SEVERE, null, "message");
     }
     
 }
