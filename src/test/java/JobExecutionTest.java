@@ -78,8 +78,9 @@ public class JobExecutionTest {
             System.out.println("There are messages" + worker.getMessages().getBody());
             User_Jobs job = worker.getUserJob(worker.getMessages().getBody());
             System.out.println(job.toString());
-            //worker.getInputFile(job.getInputurl());
-            worker.sendmail(job);
+            worker.getInputFile(job.getInputurl());
+            worker.renameAndUploadOutput(job);
+            //worker.sendmail(job);
         }
         
     }

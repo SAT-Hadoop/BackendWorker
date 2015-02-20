@@ -58,6 +58,20 @@ public class Worker{
         }
     }
     
+    public void renameAndUploadOutput(User_Jobs job){
+        try {
+            Runtime r = Runtime.getRuntime();
+            String filename = "output" + System.currentTimeMillis();
+            r.exec("mv /tmp/output "+filename).waitFor();
+            job.setOutputurl(filename);
+            job.setJobstatus("COMPLETE");
+            doa.updateJob(job);
+        } catch (IOException|InterruptedException ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.WARNING,"Problem downloading the bucket");
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public Message getMessages(){
         return sendq.getMessage();
     }

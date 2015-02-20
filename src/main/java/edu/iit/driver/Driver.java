@@ -31,6 +31,7 @@ public class Driver {
                 while (t.isAlive()) {
                     Thread.sleep(1000);
                 }
+                worker.renameAndUploadOutput(job);
                 worker.deleteMessage(message, job);
                 worker.sendmail(job);
             } else {

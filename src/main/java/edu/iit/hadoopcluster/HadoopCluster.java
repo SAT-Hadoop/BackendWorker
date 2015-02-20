@@ -50,6 +50,7 @@ public class HadoopCluster implements Runnable{
             r.exec(bin + "hadoop fs -put /tmp/inputfile /input/").waitFor();
             r.exec(bin + "hadoop jar " + jarlocation +" " +mainclass +" /input/inputfile /output").waitFor();    
             r.exec(bin + "hadoop fs -get /output /tmp/").waitFor();            
+            r.exec("gzip /tmp/output").waitFor();
             r.exec(sbin + "stop-all.sh");
             
         } catch (Exception ex) {
