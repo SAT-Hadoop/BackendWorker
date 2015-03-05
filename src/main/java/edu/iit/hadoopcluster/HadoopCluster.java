@@ -37,7 +37,11 @@ public class HadoopCluster implements Runnable{
         Runtime r = Runtime.getRuntime();
         String bin = home + "/hadoop-2.6.0/bin/";
         String sbin = home + "/hadoop-2.6.0/sbin/";
-        String jarlocation = home + "/wordcount-1.0-SNAPSHOT.jar";
+        String jarlocation;
+        if(job.getJobname().equals("wordcount"))
+            jarlocation = home + "/wordcount-1.0-SNAPSHOT.jar";  
+        else
+            jarlocation = home + "/marketbasket-1.0.jar";  
         String mainclass = "edu.iit.wordcount.WordCount";
         try {
             r.exec(sbin + "stop-all.sh").waitFor();
@@ -50,7 +54,7 @@ public class HadoopCluster implements Runnable{
             r.exec(bin + "hadoop fs -put /tmp/inputfile /input/").waitFor();
             r.exec(bin + "hadoop jar " + jarlocation +" " +mainclass +" /input/inputfile /output").waitFor();    
             r.exec(bin + "hadoop fs -get /output /tmp/").waitFor();            
-            r.exec("gzip /tmp/output").waitFor();
+            //r.exec("gzip /tmp/output").waitFor();
             r.exec(sbin + "stop-all.sh");
             
         } catch (Exception ex) {

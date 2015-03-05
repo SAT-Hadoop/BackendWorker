@@ -18,7 +18,6 @@ public class Driver {
     
     public static void main(String[] args) throws InterruptedException {
         Worker worker = new Worker();
-        
         while (true) {
             if (worker.checkForMessages()) {
                 Message message = worker.getMessages();
@@ -33,7 +32,7 @@ public class Driver {
                 }
                 worker.renameAndUploadOutput(job);
                 worker.deleteMessage(message, job);
-                worker.sendmail(job);
+                //worker.sendmail(job);
             } else {
                 System.out.println("no Messages we are sleeping");
                 Thread.sleep(5000);

@@ -32,11 +32,13 @@ public class Worker{
             ipaddress = Inet4Address.getLocalHost().getHostAddress();
             
             DOA doa = new DOA();
+            //this.queuename = "sai3";
             this.queuename = doa.getEc2Queue(ipaddress);
             System.out.println(ipaddress+":"+this.queuename);
+            
         } catch (UnknownHostException ex) {
             Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
-            System.exit(1);
+            this.queuename = "sai3";
         }
         
     }
@@ -51,7 +53,7 @@ public class Worker{
         try {
             Runtime r = Runtime.getRuntime();
             walrus.downloadObject("sat-hadoop", filelink);
-            r.exec("mv "+filelink+" /tmp  ").waitFor();
+            r.exec("cp /tmp/"+filelink+" /tmp/inputfile  ").waitFor();
         } catch (IOException|InterruptedException ex) {
             Logger.getLogger(Worker.class.getName()).log(Level.WARNING,"Problem downloading the bucket");
             Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
@@ -61,8 +63,9 @@ public class Worker{
     public void renameAndUploadOutput(User_Jobs job){
         try {
             Runtime r = Runtime.getRuntime();
-            String filename = "output" + System.currentTimeMillis();
+            String filename = "/tmp/output" + System.currentTimeMillis();
             r.exec("mv /tmp/output "+filename).waitFor();
+            walrus.putObject("sat-hadoop", filename);
             job.setOutputurl(filename);
             job.setJobstatus("COMPLETE");
             doa.updateJob(job);

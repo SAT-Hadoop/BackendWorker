@@ -4,8 +4,10 @@
  * and open the template in the editor.
  */
 import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.sqs.model.Message;
 import edu.iit.model.User_Jobs;
 import edu.iit.s3bucket.S3Bucket;
+import edu.iit.walrus.Walrus;
 import edu.iit.worker.Worker;
 import java.io.BufferedReader;
 import java.io.File;
@@ -34,11 +36,26 @@ public class JobExecutionTest {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
-    @Test @Ignore
+    @Test
     public void runWordCount() {
         Map<String, String> env = System.getenv();
         String home = env.get("HOME");
         System.out.println(home);
+        Worker worker = new Worker();
+        
+        User_Jobs job = new User_Jobs();
+        worker.getInputFile(job.getInputurl());
+        Message message =  new Message();
+        if (worker.checkForMessages()){
+            message = worker.getMessages();
+            System.out.println(message.getBody());
+            job = worker.getUserJob(worker.getMessages().getBody());
+            System.out.println(job.getJobid());
+            System.out.println(job.toString());
+            worker.getInputFile(job.getInputurl());
+        }
+        else
+            System.exit(1);
         File f = new File("/tmp/inputfile");
         if (!f.exists()){
             System.out.println("No such file buddy");
@@ -60,28 +77,42 @@ public class JobExecutionTest {
             r.exec(bin + "hadoop fs -put /tmp/inputfile /input/").waitFor();
             r.exec(bin + "hadoop jar " + jarlocation +" " +mainclass +" /input/inputfile /output").waitFor();    
             r.exec(bin + "hadoop fs -get /output /tmp/").waitFor();
-            S3Bucket s3 = new S3Bucket();
-            s3.setBucketname("testresult");
-            if (!s3.checkBucket())
-                s3.createBucket();
-            s3.uploadDirectory("/tmp/output");
             
         } catch (Exception ex) {
             Logger.getLogger(JobExecutionTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        worker.renameAndUploadOutput(job);
+        worker.deleteMessage(message, job);
+        worker.sendmail(job);
     }
-    @Test
-    public void runWorker(){
+    
+    @Test @Ignore
+    public void getInputFile(){
         Worker worker = new Worker();
         if (worker.checkForMessages()){
-            System.out.println("There are messages" + worker.getMessages().getBody());
             User_Jobs job = worker.getUserJob(worker.getMessages().getBody());
+            System.out.println(job.getJobid());
             System.out.println(job.toString());
             worker.getInputFile(job.getInputurl());
-            worker.renameAndUploadOutput(job);
-            //worker.sendmail(job);
+            //worker.renameAndUploadOutput(job);
         }
+        
+    }
+    
+    
+    @Test @Ignore
+    public void runWorker(){
+            /*String filename = "wordcount.input";
+            Runtime r = Runtime.getRuntime();
+            Walrus walrus = new Walrus();
+            walrus.putObject("sat-hadoop", "/tmp/output");*/
+            
+            
+            /*try {
+                r.exec("mv "+"/tmp/" + filename+" /tmp/inputfile").waitFor();
+            } catch (Exception ex) {
+                Logger.getLogger(JobExecutionTest.class.getName()).log(Level.SEVERE, null, ex);
+            } */
         
     }
     
