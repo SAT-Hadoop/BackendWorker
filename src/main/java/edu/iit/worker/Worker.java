@@ -65,9 +65,9 @@ public class Worker{
             Runtime r = Runtime.getRuntime();
             String filename = "/tmp/output" + System.currentTimeMillis();
             r.exec("mv /tmp/output "+filename).waitFor();
-            r.exec("/bin/gzip -r "+filename).waitFor();
-            walrus.putObject("sat-hadoop", filename+".gz");
-            job.setOutputurl(filename+".gz");
+            r.exec("/usr/bin/zip "+filename+".zip "+filename).waitFor();
+            walrus.putObject("sat-hadoop", filename+".zip");
+            job.setOutputurl(filename+".zip");
             job.setJobstatus("COMPLETE");
             doa.updateJob(job);
         } catch (IOException|InterruptedException ex) {
