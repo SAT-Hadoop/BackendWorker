@@ -65,7 +65,7 @@ public class Worker{
             Runtime r = Runtime.getRuntime();
             String filename = "/tmp/output" + System.currentTimeMillis();
             r.exec("mv /tmp/output "+filename).waitFor();
-            r.exec("gzip "+filename).waitFor();
+            r.exec("/bin/gzip -r "+filename).waitFor();
             walrus.putObject("sat-hadoop", filename+".gz");
             job.setOutputurl(filename+".gz");
             job.setJobstatus("COMPLETE");
