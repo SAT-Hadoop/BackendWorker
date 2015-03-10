@@ -44,12 +44,14 @@ public class JobExecutionTest {
         Worker worker = new Worker();
         
         User_Jobs job = new User_Jobs();
-        worker.getInputFile(job.getInputurl());
+        
         Message message =  new Message();
         if (worker.checkForMessages()){
             message = worker.getMessages();
+            
             System.out.println(message.getBody());
             job = worker.getUserJob(worker.getMessages().getBody());
+            worker.getInputFile(job.getInputurl());
             System.out.println(job.getJobid());
             System.out.println(job.toString());
             worker.getInputFile(job.getInputurl());
@@ -68,6 +70,7 @@ public class JobExecutionTest {
         String mainclass = "edu.iit.wordcount.WordCount";
         try {
             r.exec(sbin + "stop-all.sh").waitFor();
+            r.exec("rm -r /tmp/hadoop-root/dfs/data/*").waitFor();
             r.exec(bin + "hadoop namenode -format -force").waitFor();
             r.exec(sbin + "start-all.sh").waitFor();
             System.out.println("starting up the nodes");
