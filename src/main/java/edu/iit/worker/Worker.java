@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +28,8 @@ public class Worker{
     DOA doa = new DOA();
     Walrus walrus = new Walrus();
     String queuename;
+    Map<String, String> env = System.getenv();
+    String home = env.get("HOME");
     public Worker(){
         String ipaddress;
         try {
@@ -109,9 +112,9 @@ public class Worker{
     public void addSlavesToCluster(List slaves){
         try{
             Runtime r = Runtime.getRuntime();
-            r.exec("/bin/echo master > /hadoop-2.6.0/etc/hadoop/slaves").waitFor();
+            r.exec("/bin/echo master > "+ home + "/hadoop-2.6.0/etc/hadoop/slaves").waitFor();
             for (int i=0;i<slaves.size();i++){
-                r.exec("/bin/echo " +(String)slaves.get(i)+ ">> /hadoop-2.6.0/etc/hadoop/slaves").waitFor();
+                r.exec("/bin/echo " +(String)slaves.get(i)+ ">> "+ home +"/hadoop-2.6.0/etc/hadoop/slaves").waitFor();
             }
         }
         catch(Exception e){
