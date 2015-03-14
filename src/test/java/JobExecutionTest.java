@@ -3,23 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.sqs.model.Message;
 import edu.iit.model.User_Jobs;
-import edu.iit.s3bucket.S3Bucket;
-import edu.iit.walrus.Walrus;
 import edu.iit.worker.Worker;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Ignore;
 
 /**
@@ -36,7 +28,17 @@ public class JobExecutionTest {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
+    
     @Test
+    public void getSlaves(){
+        Worker worker = new Worker();
+        List slaves = worker.getSlaves(2);
+        System.out.println(slaves.get(0) + " " + slaves.get(1));
+        worker.addSlavesToCluster(slaves);
+        worker.releaseSlaves(slaves);
+    }
+    
+    @Test @Ignore
     public void runWordCount() {
         Map<String, String> env = System.getenv();
         String home = env.get("HOME");
@@ -44,7 +46,8 @@ public class JobExecutionTest {
         Worker worker = new Worker();
         
         User_Jobs job = new User_Jobs();
-        
+        List slaves = worker.getSlaves(Integer.parseInt(job.getNodes()));
+        worker.addSlavesToCluster(slaves);
         Message message =  new Message();
         if (worker.checkForMessages()){
             message = worker.getMessages();
@@ -80,11 +83,12 @@ public class JobExecutionTest {
             r.exec(bin + "hadoop fs -put /tmp/inputfile /input/").waitFor();
             r.exec(bin + "hadoop jar " + jarlocation +" " +mainclass +" /input/inputfile /output").waitFor();    
             r.exec(bin + "hadoop fs -get /output /tmp/").waitFor();
-            
+            r.exec(sbin + "stop-all.sh").waitFor();
         } catch (Exception ex) {
             Logger.getLogger(JobExecutionTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         worker.renameAndUploadOutput(job);
+        worker.releaseSlaves(slaves);
         worker.deleteMessage(message, job);
         worker.sendmail(job);
     }

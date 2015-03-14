@@ -14,6 +14,7 @@ import edu.iit.walrus.Walrus;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -94,5 +95,30 @@ public class Worker{
         String to = doa.getUser(job.getUserid()).getEmailid();
         new SendEmail().sendmail("hajek@sat.iit.edu", to);
     }
+    
+    public List getSlaves(int i){
+        return doa.getSlaves(i);
+    }
+    
+    public void releaseSlaves(List slaves){
+        for (int i=0;i<slaves.size();i++){
+            doa.updateSlave((String)slaves.get(i), "a");
+        }
+    }
+    
+    public void addSlavesToCluster(List slaves){
+        try{
+            Runtime r = Runtime.getRuntime();
+            r.exec("/bin/echo master > /hadoop-2.6.0/etc/hadoop/slaves").waitFor();
+            for (int i=0;i<slaves.size();i++){
+                r.exec("/bin/echo " +(String)slaves.get(i)+ ">> /hadoop-2.6.0/etc/hadoop/slaves").waitFor();
+            }
+        }
+        catch(Exception e){
+            System.out.println(" unable to add");
+        }
+        
+    }
+    
 }
 
