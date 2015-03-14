@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="2.151" errors="0" skipped="3" tests="4" name="JobExecutionTest">
+<testsuite failures="0" time="1.507" errors="0" skipped="3" tests="4" name="JobExecutionTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-7-oracle/jre/lib/amd64"/>
@@ -64,11 +64,11 @@
   <testcase time="0" classname="JobExecutionTest" name="runWordCount">
     <skipped/>
   </testcase>
-  <testcase time="0.002" classname="JobExecutionTest" name="getInputFile">
+  <testcase time="1.446" classname="JobExecutionTest" name="getSlaves"/>
+  <testcase time="1.446" classname="JobExecutionTest" name="getInputFile">
     <skipped/>
   </testcase>
-  <testcase time="0.002" classname="JobExecutionTest" name="runWorker">
+  <testcase time="1.446" classname="JobExecutionTest" name="runWorker">
     <skipped/>
   </testcase>
-  <testcase time="2.091" classname="JobExecutionTest" name="getSlaves"/>
 </testsuite>

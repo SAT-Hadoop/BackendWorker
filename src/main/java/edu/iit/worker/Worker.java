@@ -11,6 +11,9 @@ import edu.iit.model.User_Jobs;
 import edu.iit.sendmail.SendEmail;
 import edu.iit.sqs.SendQueue;
 import edu.iit.walrus.Walrus;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
@@ -28,8 +31,7 @@ public class Worker{
     DOA doa = new DOA();
     Walrus walrus = new Walrus();
     String queuename;
-    Map<String, String> env = System.getenv();
-    String home = env.get("HOME");
+    
     public Worker(){
         String ipaddress;
         try {
@@ -110,12 +112,23 @@ public class Worker{
     }
     
     public void addSlavesToCluster(List slaves){
+        Map<String, String> env = System.getenv();
+        String home = env.get("HOME");
         try{
             Runtime r = Runtime.getRuntime();
-            r.exec("/bin/echo master > "+ home + "/hadoop-2.6.0/etc/hadoop/slaves").waitFor();
+            System.out.println("adding master");
+            File file = new File(home + "/hadoop-2.6.0/etc/hadoop/slaves");
+            System.out.println(file.getAbsolutePath());
+            BufferedWriter output = new BufferedWriter(new FileWriter(file));
+            output.write("master");
+            
+            //r.exec("/bin/echo master > "+ home + "/hadoop-2.6.0/etc/hadoop/slaves").waitFor();
             for (int i=0;i<slaves.size();i++){
-                r.exec("/bin/echo " +(String)slaves.get(i)+ ">> "+ home +"/hadoop-2.6.0/etc/hadoop/slaves").waitFor();
+                //r.exec("/bin/echo " +(String)slaves.get(i)+ ">> "+ home +"/hadoop-2.6.0/etc/hadoop/slaves").waitFor();
+                output.write("\n"+(String)slaves.get(i));
             }
+            output.close();
+            System.out.println("added slaves");
         }
         catch(Exception e){
             System.out.println(" unable to add");
