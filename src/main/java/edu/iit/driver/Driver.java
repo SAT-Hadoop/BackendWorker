@@ -9,6 +9,7 @@ import com.amazonaws.services.sqs.model.Message;
 import edu.iit.hadoopcluster.HadoopCluster;
 import edu.iit.model.User_Jobs;
 import edu.iit.worker.Worker;
+import java.util.List;
 
 /**
  *
@@ -23,16 +24,22 @@ public class Driver {
                 Message message = worker.getMessages();
                 String jobid = message.getBody();
                 User_Jobs job = worker.getUserJob(jobid);
-                
+                List slaves = worker.getSlaves(Integer.parseInt(job.getNodes()));
+                if (slaves.size() != Integer.parseInt(job.getNodes())){
+                    Thread.sleep(2000);
+                    continue;
+                }
+                worker.addSlavesToCluster(slaves);
                 Thread t = new Thread(new HadoopCluster(job));
                 t.start();
                 
                 while (t.isAlive()) {
                     Thread.sleep(1000);
                 }
-                worker.renameAndUploadOutput(job);
+                String filename = worker.renameAndUploadOutput(job);
                 worker.deleteMessage(message, job);
-                //worker.sendmail(job);
+                worker.sendmail(job,filename);
+                worker.releaseSlaves(slaves);
             } else {
                 System.out.println("no Messages we are sleeping");
                 Thread.sleep(5000);

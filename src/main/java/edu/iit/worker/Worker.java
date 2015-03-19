@@ -66,20 +66,23 @@ public class Worker{
         }
     }
     
-    public void renameAndUploadOutput(User_Jobs job){
+    public String renameAndUploadOutput(User_Jobs job){
+        String filename = "";
         try {
             Runtime r = Runtime.getRuntime();
-            String filename = "/tmp/output" + System.currentTimeMillis();
+            filename = "/tmp/output" + System.currentTimeMillis();
             r.exec("mv /tmp/output "+filename).waitFor();
             r.exec("/usr/bin/zip "+filename+".zip "+filename).waitFor();
             walrus.putObject("sat-hadoop", filename+".zip");
             job.setOutputurl(filename+".zip");
             job.setJobstatus("COMPLETE");
             doa.updateJob(job);
+            
         } catch (IOException|InterruptedException ex) {
             Logger.getLogger(Worker.class.getName()).log(Level.WARNING,"Problem downloading the bucket");
             Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return filename+".zip";
     }
     
     public Message getMessages(){
@@ -96,9 +99,10 @@ public class Worker{
         doa.updateJob(job);
     }
     
-    public void sendmail(User_Jobs job) {
+    public void sendmail(User_Jobs job,String filename) {
         String to = doa.getUser(job.getUserid()).getEmailid();
-        new SendEmail().sendmail("hajek@sat.iit.edu", to);
+        String message = "Your job is complete, The output is in the file "+filename;
+        new SendEmail().sendmail("hajek@sat.iit.edu", to,message);
     }
     
     public List getSlaves(int i){

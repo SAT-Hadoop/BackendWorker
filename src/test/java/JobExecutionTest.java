@@ -29,7 +29,7 @@ public class JobExecutionTest {
     // The methods must be annotated with annotation @Test. For example:
     //
     
-    @Test
+    @Test @Ignore
     public void getSlaves(){
         Worker worker = new Worker();
         List slaves = worker.getSlaves(2);
@@ -38,7 +38,7 @@ public class JobExecutionTest {
         worker.releaseSlaves(slaves);
     }
     
-    @Test @Ignore
+    @Test
     public void runWordCount() {
         Map<String, String> env = System.getenv();
         String home = env.get("HOME");
@@ -46,7 +46,7 @@ public class JobExecutionTest {
         Worker worker = new Worker();
         
         User_Jobs job = new User_Jobs();
-        List slaves = worker.getSlaves(Integer.parseInt(job.getNodes()));
+        List slaves = worker.getSlaves(2);
         worker.addSlavesToCluster(slaves);
         Message message =  new Message();
         if (worker.checkForMessages()){
@@ -87,10 +87,10 @@ public class JobExecutionTest {
         } catch (Exception ex) {
             Logger.getLogger(JobExecutionTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        worker.renameAndUploadOutput(job);
-        worker.releaseSlaves(slaves);
+        String filename = worker.renameAndUploadOutput(job);
         worker.deleteMessage(message, job);
-        worker.sendmail(job);
+        worker.sendmail(job,filename);
+        worker.releaseSlaves(slaves);
     }
     
     @Test @Ignore

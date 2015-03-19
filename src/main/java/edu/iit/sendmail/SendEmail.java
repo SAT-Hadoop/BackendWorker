@@ -16,7 +16,7 @@ import javax.activation.*;
 
 public class SendEmail
 {
-   public void sendmail(String from , String to)
+   public void sendmail(String from , String to, String messagetext)
    {    
 
       // Assuming you are sending email from localhost
@@ -46,7 +46,7 @@ public class SendEmail
          message.setSubject("Job results");
 
          // Now set the actual message
-         message.setText("Your job is compelete, please refer the below link for you job output details");
+         message.setText(messagetext);
 
          // Send message
          Transport.send(message);
