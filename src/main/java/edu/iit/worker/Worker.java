@@ -58,6 +58,7 @@ public class Worker{
     public void getInputFile(String filelink) {
         try {
             Runtime r = Runtime.getRuntime();
+            Logger.getLogger(Worker.class.getName()).log(Level.WARNING,filelink);
             walrus.downloadObject("sat-hadoop", filelink);
             r.exec("cp /tmp/"+filelink+" /tmp/inputfile  ").waitFor();
         } catch (IOException|InterruptedException ex) {

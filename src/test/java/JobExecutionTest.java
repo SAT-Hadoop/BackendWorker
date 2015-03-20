@@ -73,7 +73,7 @@ public class JobExecutionTest {
         String mainclass = "edu.iit.wordcount.WordCount";
         try {
             r.exec(sbin + "stop-all.sh").waitFor();
-            r.exec("/bin/rm -r /tmp/hadoop-root/dfs/data/*").waitFor();
+            r.exec("/bin/rm -rf /tmp/hadoop-root/dfs/data/*").waitFor();
             r.exec(bin + "hadoop namenode -format -force").waitFor();
             r.exec(sbin + "start-all.sh").waitFor();
             System.out.println("starting up the nodes");
