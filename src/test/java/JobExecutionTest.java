@@ -46,8 +46,7 @@ public class JobExecutionTest {
         Worker worker = new Worker();
         
         User_Jobs job = new User_Jobs();
-        List slaves = worker.getSlaves(2);
-        worker.addSlavesToCluster(slaves);
+        
         Message message =  new Message();
         if (worker.checkForMessages()){
             message = worker.getMessages();
@@ -61,6 +60,9 @@ public class JobExecutionTest {
         }
         else
             System.exit(1);
+        
+        List slaves = worker.getSlaves(2);
+        worker.addSlavesToCluster(slaves);
         File f = new File("/tmp/inputfile");
         if (!f.exists()){
             System.out.println("No such file buddy");
