@@ -68,11 +68,17 @@ public class JobExecutionTest {
             System.out.println("No such file buddy");
             System.exit(1);
         }
+        
         Runtime r = Runtime.getRuntime();
         String bin = home + "/hadoop-2.6.0/bin/";
         String sbin = home + "/hadoop-2.6.0/sbin/";
         String jarlocation = home + "/wordcount-1.0-SNAPSHOT.jar";
         String mainclass = "edu.iit.wordcount.WordCount";
+        
+        if (!new File(jarlocation).exists()){
+            System.out.println("No such jar buddy");
+            System.exit(1);
+        }
         try {
             r.exec(sbin + "stop-all.sh").waitFor();
             r.exec("/bin/rm -rf /tmp/hadoop-root/dfs/data/*").waitFor();

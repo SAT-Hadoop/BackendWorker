@@ -122,10 +122,14 @@ public class Worker{
         try{
             Runtime r = Runtime.getRuntime();
             System.out.println("adding master");
-            File file = new File(home + "/hadoop-2.6.0/etc/hadoop/slaves");
-            System.out.println(file.getAbsolutePath());
+            File file = new File(home + "/hadoop-2.6.0/etc/hadoop/masters");
             BufferedWriter output = new BufferedWriter(new FileWriter(file));
-            output.write("master");
+            output.write(Inet4Address.getLocalHost().getHostAddress());
+            output.close();
+            file = new File(home + "/hadoop-2.6.0/etc/hadoop/slaves");
+            System.out.println(file.getAbsolutePath());
+            output = new BufferedWriter(new FileWriter(file));
+            output.write(Inet4Address.getLocalHost().getHostAddress());
             
             //r.exec("/bin/echo master > "+ home + "/hadoop-2.6.0/etc/hadoop/slaves").waitFor();
             for (int i=0;i<slaves.size();i++){
