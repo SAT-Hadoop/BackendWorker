@@ -123,7 +123,7 @@ public class Worker{
             String master = Inet4Address.getLocalHost().getHostAddress();
             for (int i=0;i<slaves.size();i++){
                 Runtime r = Runtime.getRuntime();
-                r.exec(home+"/syncmaster "+(String)slaves.get(i) +" "+master).waitFor();
+                r.exec(home+"/BackendWorker/syncmaster "+(String)slaves.get(i) +" "+master).waitFor();
             }
         }
         catch(Exception e){

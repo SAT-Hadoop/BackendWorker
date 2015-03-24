@@ -1,0 +1,7 @@
+SLAVE=$1
+MASTER=$2
+ssh root@"$SLAVE" << END
+sed '/master/d' /etc/hosts > temp
+echo "master "'$MASTER' >> temp
+cp temp /etc/hosts
+END
