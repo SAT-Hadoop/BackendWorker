@@ -116,21 +116,34 @@ public class Worker{
         }
     }
     
+    public boolean makeSlaves(List slaves){
+        Map<String, String> env = System.getenv();
+        String home = env.get("HOME");
+        try {
+            String master = Inet4Address.getLocalHost().getHostAddress();
+            for (int i=0;i<slaves.size();i++){
+                Runtime r = Runtime.getRuntime();
+                r.exec(home+"/syncmaster "+(String)slaves.get(i) +" "+master).waitFor();
+            }
+        }
+        catch(Exception e){
+                e.printStackTrace();
+                return false;
+        }
+        return true;
+    }
+    
+    
     public void addSlavesToCluster(List slaves){
         Map<String, String> env = System.getenv();
         String home = env.get("HOME");
         try{
             Runtime r = Runtime.getRuntime();
             System.out.println("adding master");
-            File file = new File(home + "/hadoop-2.6.0/etc/hadoop/masters");
-            BufferedWriter output = new BufferedWriter(new FileWriter(file));
-            output.write(Inet4Address.getLocalHost().getHostAddress());
-            output.close();
-            file = new File(home + "/hadoop-2.6.0/etc/hadoop/slaves");
+            File file = new File(home + "/hadoop-2.6.0/etc/hadoop/slaves");
             System.out.println(file.getAbsolutePath());
-            output = new BufferedWriter(new FileWriter(file));
-            output.write(Inet4Address.getLocalHost().getHostAddress());
-            
+            BufferedWriter output = new BufferedWriter(new FileWriter(file));
+            output.write("master");
             //r.exec("/bin/echo master > "+ home + "/hadoop-2.6.0/etc/hadoop/slaves").waitFor();
             for (int i=0;i<slaves.size();i++){
                 //r.exec("/bin/echo " +(String)slaves.get(i)+ ">> "+ home +"/hadoop-2.6.0/etc/hadoop/slaves").waitFor();

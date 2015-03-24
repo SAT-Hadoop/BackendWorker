@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.Ignore;
 
@@ -29,14 +30,6 @@ public class JobExecutionTest {
     // The methods must be annotated with annotation @Test. For example:
     //
     
-    @Test @Ignore
-    public void getSlaves(){
-        Worker worker = new Worker();
-        List slaves = worker.getSlaves(2);
-        System.out.println(slaves.get(0) + " " + slaves.get(1));
-        worker.addSlavesToCluster(slaves);
-        worker.releaseSlaves(slaves);
-    }
     
     @Test
     public void runWordCount() {
@@ -61,8 +54,12 @@ public class JobExecutionTest {
         else
             System.exit(1);
         
-        List slaves = worker.getSlaves(2);
+        List slaves = worker.getSlaves(1);
         worker.addSlavesToCluster(slaves);
+        if (!worker.makeSlaves(slaves)){
+            worker.releaseSlaves(slaves);
+            System.exit(1);
+        }
         File f = new File("/tmp/inputfile");
         if (!f.exists()){
             System.out.println("No such file buddy");
@@ -81,7 +78,8 @@ public class JobExecutionTest {
         }
         try {
             r.exec(sbin + "stop-all.sh").waitFor();
-            r.exec("/bin/rm -rf /tmp/hadoop-root/dfs/data/*").waitFor();
+            FileUtils.cleanDirectory(new File("/tmp/hadoop-root/dfs/data/")); 
+            //r.exec("/bin/rm -rf /tmp/hadoop-root/dfs/data/*").waitFor();
             r.exec(bin + "hadoop namenode -format -force").waitFor();
             r.exec(sbin + "start-all.sh").waitFor();
             System.out.println("starting up the nodes");
