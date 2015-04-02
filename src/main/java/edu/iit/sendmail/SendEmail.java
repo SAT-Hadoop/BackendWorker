@@ -40,7 +40,7 @@ public class SendEmail
 
          // Set To: header field of the header.
          message.addRecipient(Message.RecipientType.TO,
-                                  new InternetAddress("saipramod34@gmail.com"));
+                                  new InternetAddress(to));
 
          // Set Subject: header field
          message.setSubject("Job results");

@@ -101,7 +101,7 @@ public class Worker{
     }
     
     public void sendmail(User_Jobs job,String filename) {
-        String to = doa.getUser(job.getUserid()).getEmailid();
+        String to = job.getUserid();
         String message = "Your job is complete, The output is in the file "+filename;
         new SendEmail().sendmail("hajek@sat.iit.edu", to,message);
     }
