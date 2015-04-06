@@ -133,7 +133,6 @@ public class Worker{
         return true;
     }
     
-    
     public void addSlavesToCluster(List slaves){
         Map<String, String> env = System.getenv();
         String home = env.get("HOME");

@@ -6,7 +6,6 @@
 package edu.iit.driver;
 
 import com.amazonaws.services.sqs.model.Message;
-import edu.iit.hadoopcluster.HadoopCluster;
 import edu.iit.model.User_Jobs;
 import edu.iit.worker.Worker;
 import java.io.File;
@@ -35,14 +34,18 @@ public class Driver {
 
             if (worker.checkForMessages()) {
                 message = worker.getMessages();
-
                 System.out.println(message.getBody());
                 job = worker.getUserJob(worker.getMessages().getBody());
                 worker.getInputFile(job.getInputurl());
                 System.out.println(job.getJobid());
                 System.out.println(job.toString());
                 worker.getInputFile(job.getInputurl());
-                List slaves = worker.getSlaves(1);
+                List slaves = worker.getSlaves(Integer.parseInt(job.getNodes()));
+                while (slaves.size() != Integer.parseInt(job.getNodes())){
+                    slaves = worker.getSlaves(Integer.parseInt(job.getNodes()));
+                    System.out.println("Slaves not free, waiting");
+                    Thread.sleep(5000);
+                }
                 worker.addSlavesToCluster(slaves);
                 if (!worker.makeSlaves(slaves)) {
                     worker.releaseSlaves(slaves);
@@ -54,14 +57,21 @@ public class Driver {
                     System.exit(1);
                 }
 
+                
                 Runtime r = Runtime.getRuntime();
                 String bin = home + "/hadoop-2.6.0/bin/";
                 String sbin = home + "/hadoop-2.6.0/sbin/";
                 String jarlocation = home + "/wordcount-1.0-SNAPSHOT.jar";
                 String mainclass = "edu.iit.wordcount.WordCount";
-
+                String jobtype = job.getJobname();
+                if (jobtype.equals("wordcount")){
+                    jarlocation = home + "/wordcount-1.0-SNAPSHOT.jar";
+                }
+                else {
+                    jarlocation = home + "/MarketBasket-1.0-SNAPSHOT.jar";
+                }
                 if (!new File(jarlocation).exists()) {
-                    System.out.println("No such jar buddy");
+                    System.out.println("No such jar buddy, please kick the admins butt");
                     System.exit(1);
                 }
                 try {
