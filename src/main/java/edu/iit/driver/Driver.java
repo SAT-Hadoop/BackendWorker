@@ -96,7 +96,7 @@ public class Driver {
                 worker.sendmail(job, filename);
                 worker.releaseSlaves(slaves);
             } else {
-                Thread.sleep(50000);
+                Thread.sleep(5000);
             }
 
         }
