@@ -128,8 +128,7 @@ public class JobExecutionTest {
 
     }
 
-    @Test
-    @Ignore
+    @Test @Ignore
     public void runWorker() {
         /*String filename = "wordcount.input";
          Runtime r = Runtime.getRuntime();

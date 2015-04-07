@@ -12,7 +12,6 @@ package edu.iit.sendmail;
 import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.activation.*;
 
 public class SendEmail
 {
@@ -36,7 +35,7 @@ public class SendEmail
          MimeMessage message = new MimeMessage(session);
 
          // Set From: header field of the header.
-         message.setFrom(new InternetAddress("saipramod34@gmail.com"));
+         message.setFrom(new InternetAddress("sat-hadoop@iit.edu"));
 
          // Set To: header field of the header.
          message.addRecipient(Message.RecipientType.TO,
@@ -50,7 +49,7 @@ public class SendEmail
 
          // Send message
          Transport.send(message);
-         System.out.println("Sent message successfully....");
+         System.out.println("Sent message successfully...." + message.toString());
       }catch (MessagingException mex) {
          mex.printStackTrace();
       }
