@@ -8,7 +8,7 @@ echo $SLAVE `hostname`
 ">> /etc/hosts
 
 ssh root@"$SLAVE" << END
-echo "
+echo"
 <?xml version="1.0"?>
 <configuration>
   <property>
