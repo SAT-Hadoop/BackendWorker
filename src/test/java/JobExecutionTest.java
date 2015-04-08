@@ -49,7 +49,7 @@ public class JobExecutionTest {
                 worker.getInputFile(job.getInputurl());
                 System.out.println(job.toString());
                 worker.getInputFile(job.getInputurl());
-                System.exit(1);
+//                System.exit(1);
                 
                 List slaves = worker.getSlaves(Integer.parseInt(job.getNodes()));
                 while (slaves.size() != Integer.parseInt(job.getNodes())){
