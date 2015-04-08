@@ -9,7 +9,6 @@ echo $SLAVE `hostname`
 
 ssh root@"$SLAVE" << END
 echo"
-<?xml version="1.0"?>
 <configuration>
   <property>
     <name>yarn.resourcemanager.resource-tracker.address</name>
