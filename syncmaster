@@ -32,4 +32,5 @@ echo "
   </property>
 </configuration>
 "> $HOME/hadoop-2.6.0/etc/hadoop/yarn-site.xml
+>/tmp/hadoop-root/dfs/data/
 END
