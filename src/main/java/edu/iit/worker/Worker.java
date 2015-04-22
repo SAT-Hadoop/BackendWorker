@@ -40,9 +40,15 @@ public class Worker{
             DOA doa = new DOA();
             //this.queuename = "sai3";
             this.queuename = doa.getEc2Queue(ipaddress);
+            while (this.queuename.isEmpty()){
+               this.queuename = doa.getEc2Queue(ipaddress);
+               System.out.println("Queue name is not mapped, waiting for one");
+               Thread.sleep(5000);
+            }
+                
             System.out.println(ipaddress+":"+this.queuename);
             
-        } catch (UnknownHostException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
             this.queuename = "sai3";
         }

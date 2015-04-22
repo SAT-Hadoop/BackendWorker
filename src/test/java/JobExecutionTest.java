@@ -25,6 +25,7 @@ public class JobExecutionTest {
     private static final Logger log = Logger.getLogger(JobExecutionTest.class.getName());
 
     public JobExecutionTest() {
+        
     }
 
     // TODO add test methods here.
