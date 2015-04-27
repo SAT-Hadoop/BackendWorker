@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 import com.amazonaws.services.sqs.model.Message;
+import static edu.iit.credentials.Credentials.THEPATH;
 import edu.iit.driver.Driver;
 import edu.iit.model.User_Jobs;
 import edu.iit.worker.Worker;
@@ -63,13 +64,13 @@ public class JobExecutionTest {
                     worker.releaseSlaves(slaves);
                     System.exit(1);
                 }
-                File f = new File("/tmp/inputfile");
+                File f = new File(THEPATH+"inputfile");
                 if (!f.exists()) {
                     System.out.println("No such file buddy");
                     System.exit(1);
                 }
 
-                
+                worker.makeCurrentNodeMaster();
                 Runtime r = Runtime.getRuntime();
                 String bin = home + "/hadoop-2.6.0/bin/";
                 String sbin = home + "/hadoop-2.6.0/sbin/";
@@ -78,17 +79,19 @@ public class JobExecutionTest {
                 String jobtype = job.getJobname();
                 if (jobtype.equals("wordcount")){
                     jarlocation = home + "/wordcount-1.0-SNAPSHOT.jar";
+                    mainclass = "edu.iit.wordcount.WordCount";
                 }
                 else {
                     jarlocation = home + "/MarketBasket-1.0-SNAPSHOT.jar";
                 }
+                worker.getJar(jobtype);
                 if (!new File(jarlocation).exists()) {
                     System.out.println("No such jar buddy, please kick the admins butt");
                     System.exit(1);
                 }
                 try {
                     r.exec(sbin + "stop-all.sh").waitFor();
-                    FileUtils.cleanDirectory(new File("/tmp/hadoop-root/dfs/data/"));
+                    FileUtils.cleanDirectory(new File(THEPATH+"/hadoop/"));
                     //r.exec("/bin/rm -rf /tmp/hadoop-root/dfs/data/*").waitFor();
                     r.exec(bin + "hadoop namenode -format -force").waitFor();
                     r.exec(sbin + "start-all.sh").waitFor();
@@ -96,9 +99,9 @@ public class JobExecutionTest {
                     r.exec(bin + "hadoop fs -rm /input/inputfile").waitFor();
                     r.exec(bin + "hadoop fs -rmr /output").waitFor();
                     r.exec(bin + "hadoop fs -mkdir /input").waitFor();
-                    r.exec(bin + "hadoop fs -put /tmp/inputfile /input/").waitFor();
+                    r.exec(bin + "hadoop fs -put "+THEPATH+"/inputfile /input/").waitFor();
                     r.exec(bin + "hadoop jar " + jarlocation + " " + mainclass + " /input/inputfile /output").waitFor();
-                    r.exec(bin + "hadoop fs -get /output /tmp/").waitFor();
+                    r.exec(bin + "hadoop fs -get /output "+THEPATH).waitFor();
                     r.exec(sbin + "stop-all.sh").waitFor();
                 } catch (Exception ex) {
                     Logger.getLogger(Driver.class.getName()).log(Level.SEVERE, null, ex);

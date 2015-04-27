@@ -6,6 +6,7 @@
 package edu.iit.worker;
 
 import com.amazonaws.services.sqs.model.Message;
+import static edu.iit.credentials.Credentials.THEPATH;
 import edu.iit.doa.DOA;
 import edu.iit.model.User_Jobs;
 import edu.iit.sendmail.SendEmail;
@@ -66,19 +67,30 @@ public class Worker{
             Runtime r = Runtime.getRuntime();
             Logger.getLogger(Worker.class.getName()).log(Level.WARNING,filelink);
             walrus.downloadObject("sat-hadoop", filelink);
-            r.exec("cp /tmp/"+filelink+" /tmp/inputfile  ").waitFor();
+            r.exec("cp "+THEPATH+filelink+" " +THEPATH+"inputfile  ").waitFor();
         } catch (IOException|InterruptedException ex) {
             Logger.getLogger(Worker.class.getName()).log(Level.WARNING,"Problem downloading the bucket");
             Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
+    public void getJar(String jar){
+        try {
+            Runtime r = Runtime.getRuntime();
+            Logger.getLogger(Worker.class.getName()).log(Level.WARNING,jar);
+            walrus.downloadObject("sat-jobs", jar);
+            r.exec("cp "+THEPATH+jar+" "+THEPATH).waitFor();
+        } catch (Exception ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.WARNING,"Problem downloading the bucket");
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     public String renameAndUploadOutput(User_Jobs job){
         String filename = "";
         try {
             Runtime r = Runtime.getRuntime();
-            filename = "/tmp/output" + System.currentTimeMillis();
-            r.exec("mv /tmp/output "+filename).waitFor();
+            filename = THEPATH+"output" + System.currentTimeMillis();
+            r.exec("mv "+THEPATH+"output "+filename).waitFor();
             r.exec("/usr/bin/zip -r "+filename+".zip "+filename).waitFor();
             walrus.putObject("sat-hadoop", filename+".zip");
             job.setOutputurl(filename+".zip");
@@ -161,6 +173,23 @@ public class Worker{
             System.out.println(" unable to add");
         }
         
+    }
+    
+    public void makeCurrentNodeMaster(){
+        Map<String, String> env = System.getenv();
+        String home = env.get("HOME");
+        try{
+            Runtime r = Runtime.getRuntime();
+            System.out.println("adding master");
+            File file = new File(home + "/hadoop-2.6.0/etc/hadoop/masters");
+            System.out.println(file.getAbsolutePath());
+            BufferedWriter output = new BufferedWriter(new FileWriter(file));
+            output.write("master");
+            output.close();
+        }
+        catch(Exception e){
+            System.out.println(" unable to add");
+        }
     }
     
 }

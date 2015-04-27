@@ -1,36 +1,36 @@
 SLAVE=$1
 MASTER=$2
 ssh root@"$SLAVE" "
+rm ~/hadoop-2.6.0/etc/hadoop/masters
 sed '/master/d' /etc/hosts > temp
 echo '$MASTER' " master" >> temp
 cp temp /etc/hosts
-echo $SLAVE `hostname`
-">> /etc/hosts
-
-ssh root@"$SLAVE" << END
-echo "
+echo $SLAVE 'euca-'`echo $SLAVE | sed 's/\./-/g'`'.eucalyptus.internal'
+rm -r /vol-01/hadoop
+echo '
 <configuration>
   <property>
     <name>yarn.resourcemanager.resource-tracker.address</name>
-    <value>namenode:8031</value>
+    <value>master:8031</value>
   </property>
   <property>
     <name>yarn.resourcemanager.address</name>
-    <value>namenode:8032</value>
+    <value>master:8032</value>
   </property>
   <property>
     <name>yarn.resourcemanager.scheduler.address</name>
-    <value>namenode:8030</value>
+    <value>master:8030</value>
   </property>
   <property>
     <name>yarn.resourcemanager.admin.address</name>
-    <value>namenode:8033</value>
+    <value>master:8033</value>
   </property>
   <property>
     <name>yarn.resourcemanager.webapp.address</name>
-    <value>namenode:8088</value>
+    <value>master:8088</value>
   </property>
 </configuration>
-"> $HOME/hadoop-2.6.0/etc/hadoop/yarn-site.xml
->/tmp/hadoop-root/dfs/data/
-END
+' > /root/hadoop-2.6.0/etc/hadoop/yarn-site.xml
+
+" >> /etc/hosts
+
