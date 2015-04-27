@@ -31,7 +31,7 @@ public class Worker{
     SendQueue sendq = new SendQueue();
     DOA doa = new DOA();
     Walrus walrus = new Walrus();
-    String queuename;
+    String queuename = "";
     
     public Worker(){
         String ipaddress;
@@ -79,7 +79,7 @@ public class Worker{
             Runtime r = Runtime.getRuntime();
             Logger.getLogger(Worker.class.getName()).log(Level.WARNING,jar);
             walrus.downloadObject("sat-jobs", jar);
-            r.exec("cp "+THEPATH+jar+" "+THEPATH).waitFor();
+            r.exec("cp "+THEPATH+jar+" /root/").waitFor();
         } catch (Exception ex) {
             Logger.getLogger(Worker.class.getName()).log(Level.WARNING,"Problem downloading the bucket");
             Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);

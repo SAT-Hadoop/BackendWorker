@@ -74,17 +74,11 @@ public class JobExecutionTest {
                 Runtime r = Runtime.getRuntime();
                 String bin = home + "/hadoop-2.6.0/bin/";
                 String sbin = home + "/hadoop-2.6.0/sbin/";
-                String jarlocation = home + "/wordcount-1.0-SNAPSHOT.jar";
+                
                 String mainclass = "edu.iit.wordcount.WordCount";
                 String jobtype = job.getJobname();
-                if (jobtype.equals("wordcount")){
-                    jarlocation = home + "/wordcount-1.0-SNAPSHOT.jar";
-                    mainclass = "edu.iit.wordcount.WordCount";
-                }
-                else {
-                    jarlocation = home + "/MarketBasket-1.0-SNAPSHOT.jar";
-                }
                 worker.getJar(jobtype);
+                String jarlocation = home + "/" + jobtype;
                 if (!new File(jarlocation).exists()) {
                     System.out.println("No such jar buddy, please kick the admins butt");
                     System.exit(1);
