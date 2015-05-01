@@ -86,7 +86,7 @@ public class JobExecutionTest {
                 try {
                     r.exec(sbin + "stop-all.sh").waitFor();
                     //FileUtils.cleanDirectory(new File(THEPATH+"/hadoop/"));
-                    //r.exec("/bin/rm -rf /tmp/hadoop-root/dfs/data/*").waitFor();
+                    r.exec("/bin/rm -rf "+THEPATH+"/hadoop/").waitFor();
                     r.exec(bin + "hadoop namenode -format -force").waitFor();
                     r.exec(sbin + "start-all.sh").waitFor();
                     System.out.println("starting up the nodes");
