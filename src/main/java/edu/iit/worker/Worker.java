@@ -143,6 +143,10 @@ public class Worker{
                 Runtime r = Runtime.getRuntime();
                 r.exec(home+"/BackendWorker/syncmaster "+(String)slaves.get(i) +" "+master).waitFor();
             }
+            for (int i=0;i<slaves.size();i++){
+                Runtime r = Runtime.getRuntime();
+                r.exec("ssh /etc/hosts root@"+(String)slaves.get(i)+":/etc/hosts").waitFor();
+            }
         }
         catch(Exception e){
                 e.printStackTrace();
