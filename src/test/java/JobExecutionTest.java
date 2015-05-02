@@ -86,7 +86,7 @@ public class JobExecutionTest {
                 try {
                     r.exec(sbin + "stop-all.sh").waitFor();
                     //FileUtils.cleanDirectory(new File(THEPATH+"/hadoop/"));
-                    r.exec("/bin/rm -rf "+THEPATH+"/hadoop/").waitFor();
+                    r.exec("/bin/rm -r "+THEPATH+"/hadoop").waitFor();
                     r.exec(bin + "hadoop namenode -format -force").waitFor();
                     r.exec(sbin + "start-all.sh").waitFor();
                     System.out.println("starting up the nodes");
@@ -101,7 +101,7 @@ public class JobExecutionTest {
                     Logger.getLogger(Driver.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 String filename = worker.renameAndUploadOutput(job);
-                //worker.deleteMessage(message, job);
+                worker.deleteMessage(message, job);
                 worker.sendmail(job, filename);
                 worker.releaseSlaves(slaves);
             } else {
