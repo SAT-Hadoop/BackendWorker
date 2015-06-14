@@ -9,6 +9,8 @@ import com.amazonaws.services.sqs.model.Message;
 import static edu.iit.credentials.Credentials.THEPATH;
 import edu.iit.doa.DOA;
 import edu.iit.model.User_Jobs;
+import edu.iit.rabbitmq.Receive;
+import edu.iit.rabbitmq.Send;
 import edu.iit.sendmail.SendEmail;
 import edu.iit.sqs.SendQueue;
 import edu.iit.walrus.Walrus;
@@ -28,13 +30,13 @@ import java.util.logging.Logger;
  * @author supramo
  */
 public class Worker{
-    SendQueue sendq = new SendQueue();
+    Send sendqueue = new Send();
     DOA doa = new DOA();
     Walrus walrus = new Walrus();
-    String queuename = "";
+    //String queuename = ;
     
     public Worker(){
-        String ipaddress;
+        /*String ipaddress;
         try {
             ipaddress = Inet4Address.getLocalHost().getHostAddress();
             
@@ -52,14 +54,20 @@ public class Worker{
         } catch (Exception ex) {
             Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
             this.queuename = "sai3";
-        }
+        }*/
         
     }
+    
+    /*
     public boolean checkForMessages(){
         
         //this.queuename = "https://sqs.us-east-1.amazonaws.com/961412573847/sai4";
-        return sendq.checkForMessages(this.queuename);
-    }
+        
+        return receivequeue.getMessage();
+        
+    }*/
+    
+    
     
     
     public void getInputFile(String filelink) {
@@ -104,19 +112,23 @@ public class Worker{
         return filename+".zip";
     }
     
+    
+    /*
     public Message getMessages(){
         return sendq.getMessage();
     }
-    
+    */
     public User_Jobs getUserJob(String jobid){
         return doa.getUserJob(jobid);
     }
     
+    
+    /*
     public void deleteMessage(Message message,User_Jobs job){
         sendq.deleteMessage(message, this.queuename);
         job.setJobstatus("COMPLETE");
         doa.updateJob(job);
-    }
+    }*/
     
     public void sendmail(User_Jobs job,String filename) {
         String to = job.getUserid();
