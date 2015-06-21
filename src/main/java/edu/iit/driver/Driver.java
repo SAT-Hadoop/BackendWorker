@@ -30,7 +30,7 @@ public class Driver {
         User_Jobs job = new User_Jobs();
 
         Message message = new Message();
-        while (true) {
+/*        while (true) {
 
             if (worker.checkForMessages()) {
                 message = worker.getMessages();
@@ -99,7 +99,7 @@ public class Driver {
                 Thread.sleep(5000);
             }
 
-        }
+        }*/
     }
 
 }

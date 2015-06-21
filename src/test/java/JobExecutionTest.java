@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import com.amazonaws.services.sqs.model.Message;
 import static edu.iit.credentials.Credentials.THEPATH;
 import edu.iit.driver.Driver;
 import edu.iit.model.User_Jobs;
@@ -15,9 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
-import org.junit.Ignore;
 
 /**
  *
